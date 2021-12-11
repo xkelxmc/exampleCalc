@@ -1,54 +1,23 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Buttons} from './Buttons';
-//Ошибка
+import {useCalc} from './useCalc';
+
 export const Calc = () => {
-  const [currentNumber, setCurrentNumber] = useState(0);
-  const [currentAction, setCurrentAction] = useState(null);
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(0);
+  const {isError, currentNumber, onClickNumber, onAction} = useCalc();
 
-  const onClickNumber = n => () => {
-    let newString = String(currentNumber);
-    if (n === ',') {
-      console.log('todo!', n);
-    } else {
-      newString += n;
-    }
-    const newCurrentNumber = Number(newString);
-    setCurrentNumber(newCurrentNumber);
-  };
-
-  const calcNumbers = (num1, num2) => {
-    if (currentAction === 'sum') {
-      return num1 + num2;
-    } else if (currentAction === 'minus') {
-      return num1 - num2;
-    } else {
-      return num2;
-    }
-  };
-
-  const onAction = action => () => {
-    setCurrentAction(action);
-    const result = calcNumbers(a, currentNumber);
-    console.log({action, a, currentNumber, result});
-    if (action === 'sum' || action === 'minus') {
-      setA(result);
-      setCurrentNumber(0);
-    }
-    if (action === 'result') {
-      setCurrentNumber(result);
-      setA(0);
-    }
-  };
+  const viewNumber = !isError ? currentNumber : 'Ошибка';
 
   return (
     <View style={styles.container}>
       <View style={styles.resultContainer}>
-        <Text style={styles.resultText}>{currentNumber}</Text>
+        <Text style={styles.resultText}>{viewNumber}</Text>
       </View>
-      <Buttons onClickNumber={onClickNumber} onAction={onAction} />
+      <Buttons
+        onClickNumber={onClickNumber}
+        onAction={onAction}
+        isError={isError}
+      />
     </View>
   );
 };
